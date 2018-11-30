@@ -1,8 +1,9 @@
 from flask import Flask
 from flask import flash, render_template, request, redirect
-
+from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
+Bootstrap(app)
 
 @app.route('/')
 def index():
@@ -18,7 +19,7 @@ def exhibits_result():
 
 @app.route('/exhibits/history')
 def exhibits_history():
-    return render_template('exhibit_history.html')
+    return render_template('exhibit.html')
 
 @app.route('/shows/result')
 def shows_result():
