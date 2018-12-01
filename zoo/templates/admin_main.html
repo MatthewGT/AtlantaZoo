@@ -10,37 +10,35 @@
 {% if current_user.is_authenticated %}
     {{ current_user.username }}
 {% else %}
-    Stranger
+    Staff Page
 {% endif %}!
 
 <!-- 使用submit type button来通过点击button发起请求 -->
-<div>
-<form method="get" action="/exhibits/result">
-  <button type="submit" class="btn btn-primary" >Search Exhibits</button>
-</form>
-</div>
 
-<div>
-<form method="get" action="/shows/result">
-  <button type="submit" class="btn btn-primary" >Search Shows</button>
-</form>
-</div>
-
-<form method="get" action="/animals/result">
-  <button type="submit" class="btn btn-primary" >Search Animals</button>
+<form method="get" action="/visitors/all">
+  <button type="submit" class="btn btn-primary" >View Visitors</button>
 </form>
 
-<div>
-<form method="get" action="/exhibits/history">
-  <button type="submit" class="btn btn-primary" >View Exhibit History</button>
+<form method="get" action="/staffs/all">
+  <button type="submit" class="btn btn-primary" >View Staff</button>
 </form>
-</div>
 
-<div>
-<form method="get" action="/shows/history">
-  <button type="submit" class="btn btn-primary" >View Show History</button>
+<form method="get" action="/shows/all">
+  <button type="submit" class="btn btn-primary" >View Shows</button>
 </form>
-</div>
+
+<form method="get" action="/animals/all">
+  <button type="submit" class="btn btn-primary" >View Animals</button>
+</form>
+
+<form method="get" action="/shows/add">
+  <button type="submit" class="btn btn-primary" >Add Show</button>
+</form>
+
+<form method="get" action="/animals/add">
+  <button type="submit" class="btn btn-primary" >Add Animal</button>
+</form>
+
 {% endblock %}
 
 

@@ -2,7 +2,8 @@ from flask import Flask
 from flask import flash, render_template, request, redirect, url_for
 from flask_bootstrap import Bootstrap
 from flask_login import login_required, LoginManager, login_user, logout_user
-from forms import LoginForm, RegistrationForm, ExhibitForm
+from forms import LoginForm, RegistrationForm, ExhibitForm, SearchShowForm, \
+AnimalCareForm, AnimalForm, ExhibitHistoryForm, ShowForm
 from models import User, Admin, Visitor, Staff, Animal, Show, Exhibit, AnimalCare, \
 VisitShow, VisitExhibit, db
 from exhibit_table import Results
@@ -30,10 +31,6 @@ def visitor_main():
 def staff_main():
     return render_template('staff_main.html')
 
-@app.route('/admin/main')
-def admin_main():
-    return render_template('admin_main.html')
-
 def search_exhibit(search):
     ### copy of musicdb start here
     results = []
@@ -46,30 +43,6 @@ def search_exhibit(search):
                 Exhibit.Size > min_size, \
                 Exhibit.Size < max_size)
     results = qry.all()
-    # print(search_string)
-    # # check if the user has entered a search string in the search box
-    # if search_string:
-    #     # check to see which filter the user has chosen from the combobox:
-    #     # Artist, Album or Publisher
-    #     if search.data['exhibit_name'] == 'Pacific':
-    #         qry = db.session.query(Exhibit).filter(
-    #             Exhibit.Name.contains(search_string))
-    #         results = qry.all()
-    #     # elif search.data['select'] == 'Album':
-    #     #     qry = db_session.query(Album).filter(
-    #     #         Album.title.contains(search_string))
-    #     #     results = qry.all()
-    #     # elif search.data['select'] == 'Publisher':
-    #     #     qry = db_session.query(Album).filter(
-    #     #         Album.publisher.contains(search_string))
-    #     #     results = qry.all()
-    #     # else:
-    #     #     qry = db_session.query(Album)
-    #     #     results = qry.all()
-    # else:
-    #     qry = db.session.query(Exhibit)
-    #     results = qry.all()
-
     if not results:
         flash('No results found!')
         return redirect('/exhibits/result')
@@ -91,19 +64,23 @@ def exhibits_result():
 
 @app.route('/exhibits/history')
 def exhibits_history():
-    return render_template('exhibit.html')
+    exhibit = ExhibitHistoryForm()
+    return render_template('exhibit_history.html', form=exhibit)
 
 @app.route('/shows/result')
 def shows_result():
-    return render_template('search_shows.html')
+    show_form = SearchShowForm()
+    return render_template('search_shows.html', form=show_form)
 
 @app.route('/shows/history')
 def shows_history():
-    return render_template('show_history.html')
+    show_history = SearchShowForm()
+    return render_template('show_history.html', form=show_history)
 
 @app.route('/animals/result')
 def animals_result():
-    return render_template('search_animals.html')
+    animal_form = AnimalForm()
+    return render_template('search_animals.html', form=animal_form)
 
 @app.route('/user/login', methods=['GET', 'POST'])
 def login():
@@ -116,9 +93,9 @@ def login():
             if (user.UserType == 'visitor'):
                 return redirect(url_for('visitor_main'))
             if (user.UserType == 'staff'):
-                return url_for('staff_main')
+                return redirect(url_for('staff_main'))
             if (user.UserType == 'admin'):
-                return url_for('admin_main')
+                return redirect(url_for('admin_main'))
             #return redirect(request.args.get('next') or url_for('index'))
         else:
             flash(u'Invalid username or password.', 'error')
@@ -155,6 +132,45 @@ def register():
         flash('You can now login.')
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
+
+# Admin url routes
+@app.route('/admin/main')
+def admin_main():
+    return render_template('admin_main.html')
+
+# View Staff Button
+@app.route('/staffs/all', methods=['GET', 'POST'])
+def view_staff():
+    return render_template('staff_list_ad.html')
+
+# View Shows Button
+@app.route('/shows/all', methods=['GET', 'POST'])
+def view_show():
+    form = SearchShowForm()
+    return render_template('show_list_ad.html', form = form)
+
+# View Animals Button
+@app.route('/animals/all', methods=['GET', 'POST'])
+def view_animals():
+    animal_form = AnimalForm()
+    return render_template('animal_list_ad.html', form=animal_form)
+
+# View Visitors Button
+@app.route('/visitors/all', methods=['GET', 'POST'])
+def view_visitors():
+    return render_template('visitor_list_ad.html')
+
+# Add Show Button
+@app.route('/shows/add', methods=['GET', 'POST'])
+def add_show():
+    show_form = ShowForm()
+    return render_template('add_show.html', form=show_form)
+
+# Add Animal Button
+@app.route('/animals/add', methods=['GET', 'POST'])
+def add_animal():
+    animal_form = AnimalForm()
+    return render_template('add_animal.html', form=animal_form)
 
 if __name__ == '__main__':
     app.run(debug=True)

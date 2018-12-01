@@ -5,5 +5,19 @@
     <div class="page-header">
         <h1>Exhibit History!</h1>
     </div>
+    {% from "_formhelpers.html" import render_field %}
+    <form method=post>
+      <dl>
+        {{ render_field(form.exhibit_name) }}
+        <p>
+        {{ render_field(form.min_visits) }}
+        <p>
+        {{ render_field(form.max_visits) }}
+        <p>
+        {{ render_field(form.visit_time) }}
+        <p>
+      </dl>
+      <p><input type=submit value=Search>
+    </form>
 </div>
 {% endblock %}

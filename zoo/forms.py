@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField, PasswordField, \
-BooleanField,IntegerField
+BooleanField,IntegerField, DateTimeField, TextAreaField, DateField
 from wtforms.validators import Required, Length, Email, Regexp, EqualTo
 from wtforms import ValidationError
 from models import User, Admin, Visitor, Staff, Animal, Show, Exhibit, AnimalCare, \
@@ -12,18 +12,46 @@ class NameForm(FlaskForm):
 
 class ExhibitForm(FlaskForm):
     exhibit_name = StringField('Name:', validators=[],default='Pacific')
-    min_animals = IntegerField('min_animals:', validators=[],default=0)
-    max_animals = IntegerField('max_animals:', validators=[],default=100)
-    min_size = IntegerField('min_size:', validators=[],default=0)
-    max_size = IntegerField('max_size:', validators=[],default=1400)
-
-    # min_animals = SelectField(u'Min Number of Animals', choices=[('0','100','600')])
-    # max_animals = SelectField(u'Max Number of Animals', choices=[('10')])
-    # min_size = SelectField(u'Min Number of Size', choices=[('min_low','2'), ('min_up', '8')])
-    # max_size = SelectField(u'Max Number of Size', choices=[('20')])
+    min_animals = IntegerField('Minimum number of animals:', validators=[],default=0)
+    max_animals = IntegerField('Maximum number of animals:', validators=[],default=100)
+    min_size = IntegerField('Minimum Size:', validators=[],default=0)
+    max_size = IntegerField('Maximum Size:', validators=[],default=1400)
     water_feature = BooleanField('Water Feature?')
 
+class SearchAnimalForm(FlaskForm):
+    animal_name = StringField('Animal Name:', validators=[])
+    species = StringField('Species:', validators=[])
+    min_age = StringField('Min Age:', validators=[])
+    max_age = StringField('Max Age:', validators=[])
+    animal_type = StringField('Type:', validators=[])
 
+class ExhibitHistoryForm(FlaskForm):
+    exhibit_name = StringField('Name:', validators=[],default='Pacific')
+    min_visits = IntegerField('min_visits:', validators=[],default=0)
+    max_visits = IntegerField('max_visits:', validators=[],default=0)
+    visit_time = DateTimeField('visit_time', validators=[])
+
+class SearchShowForm(FlaskForm):
+    show_name = StringField('Name of the Show:', validators=[],default='Feed the fish')
+    exhibit_name = StringField('Name:', validators=[],default='Pacific')
+    date = DateTimeField('Date:', validators=[])
+
+class ShowForm(FlaskForm):
+    show_name = StringField('Name of the Show:', validators=[],default='Feed the fish')
+    exhibit_name = StringField('Name:', validators=[],default='Pacific')
+    staff = StringField('Staff:', validators=[],default='Ellen')
+    date = DateField('Date:', validators=[])
+    time = DateTimeField('Time:', validators=[])
+
+class AnimalCareForm(FlaskForm):
+    care_text = TextAreaField('Notes:')
+
+class AnimalForm(FlaskForm):
+    animal_name = StringField('Name:', validators=[],default='Jim')
+    exhibit_name = StringField('Name:', validators=[],default='Pacific')
+    animal_type = StringField('Type:', validators=[])
+    species = StringField("Species: ", validators=[])
+    age = StringField("Age: ", validators=[])
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[Required(), Length(1, 64),
@@ -53,39 +81,3 @@ class RegistrationForm(FlaskForm):
         if User.query.filter_by(Username=field.data).first():
             raise ValidationError('Username already in use.')
 
-
-class ChangePasswordForm(FlaskForm):
-    old_password = PasswordField('Old password', validators=[Required()])
-    password = PasswordField('New password', validators=[
-        Required(), EqualTo('password2', message='Passwords must match')])
-    password2 = PasswordField('Confirm new password', validators=[Required()])
-    submit = SubmitField('Update Password')
-
-
-class PasswordResetRequestForm(FlaskForm):
-    email = StringField('Email', validators=[Required(), Length(1, 64),
-                                             Email()])
-    submit = SubmitField('Reset Password')
-
-
-class PasswordResetForm(FlaskForm):
-    email = StringField('Email', validators=[Required(), Length(1, 64),
-                                             Email()])
-    password = PasswordField('New Password', validators=[
-        Required(), EqualTo('password2', message='Passwords must match')])
-    password2 = PasswordField('Confirm password', validators=[Required()])
-    submit = SubmitField('Reset Password')
-
-    def validate_email(self, field):
-        if User.query.filter_by(email=field.data).first() is None:
-            raise ValidationError('Unknown email address.')
-
-class ChangeEmailForm(FlaskForm):
-    email = StringField('New Email', validators=[Required(), Length(1, 64),
-                                                 Email()])
-    password = PasswordField('Password', validators=[Required()])
-    submit = SubmitField('Update Email Address')
-
-    def validate_email(self, field):
-        if User.query.filter_by(email=field.data).first():
-            raise ValidationError('Email already registered.')
