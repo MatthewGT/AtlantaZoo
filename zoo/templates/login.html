@@ -1,0 +1,27 @@
+
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{%block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Log in page!</h1>
+    </div>
+    <div class="col-md-4">
+        <h1> login </h1>
+        <!-- {% with errors = get_flashed_messages(category_filter=["error"]) %}
+            {% if errors %}
+            <div class="alert-message block-message error">
+              <a class="close" href="#">×</a>
+              <ul>
+                {%- for msg in errors %}
+                <li>{{ msg }}</li>
+                {% endfor -%}
+              </ul>
+            </div>
+            {% endif %}
+        {% endwith %} -->
+
+        {{ wtf.quick_form(form) }}
+    </div>
+</div>
+{% endblock %}

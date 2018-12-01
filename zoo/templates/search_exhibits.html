@@ -1,6 +1,37 @@
-<doctype html>
-<head>
-    <title>Search Exhibits</title>
-</head>
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
-<h2>Search Exhibits</h2>
+
+{%block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Search Exhibits!</h1>
+    </div>
+
+  <!--   <div class="col-md-4" method= "post">
+        {{ wtf.quick_form(form) }}
+        <p><input type=submit value=Search>
+    </div> -->
+
+    {% from "_formhelpers.html" import render_field %}
+    <form method=post>
+      <dl>
+        {{ render_field(form.exhibit_name) }}
+        <p>
+        {{ render_field(form.min_animals) }}
+        <p>
+        {{ render_field(form.max_animals) }}
+        <p>
+        {{ render_field(form.min_size) }}
+        <p>
+        {{ render_field(form.max_size) }}
+        <p>
+        {{ render_field(form.water_feature) }}
+      </dl>
+      <p><input type=submit value=Search>
+    </form>
+
+</div>
+{% endblock %}
+
+

@@ -1,4 +1,4 @@
-from hell_cp import db, User, Staff, Admin, Visitor, Animal,Show,Exhibit,AnimalCare,VisitShow,VisitExhibit
+from models import db, User, Staff, Admin, Visitor, Animal,Show,Exhibit,AnimalCare,VisitShow,VisitExhibit
 
 
 
@@ -13,17 +13,17 @@ if __name__ == '__main__':
 	types = ['staff','staff','staff','visitor','visitor','visitor','visitor','admin']
 	for i in range(len(usernames)):
 		if(types[i] == 'staff'):
-			username = User(Username=usernames[i],Password=passwords[i],Email=emails[i],UserType=types[i])
+			username = User(Username=usernames[i],password=passwords[i],Email=emails[i],UserType=types[i])
 			staffname = Staff(user_staff=username)
 			db.session.add_all([username,staffname])
 			db.session.commit()
 		if(types[i] == 'visitor'):
-			username = User(Username=usernames[i],Password=passwords[i],Email=emails[i],UserType=types[i])
+			username = User(Username=usernames[i],password=passwords[i],Email=emails[i],UserType=types[i])
 			visitorname = Visitor(user_visitor=username)
 			db.session.add_all([username,visitorname])
 			db.session.commit()
 		if(types[i] == 'admin'):
-			username = User(Username=usernames[i],Password=passwords[i],Email=emails[i],UserType=types[i])
+			username = User(Username=usernames[i],password=passwords[i],Email=emails[i],UserType=types[i])
 			adminname = Admin(user_admin=username)
 			db.session.add_all([username,adminname])
 			db.session.commit()
@@ -47,7 +47,7 @@ if __name__ == '__main__':
 		db.session.add(show)
 		db.session.commit()
 
-	###insert animal data 
+	###insert animal data
 	animalnames = ['Goldy','Nemo','Pedro','Lincoln','Greg','Brad']
 	speciesname = ['Goldfish','Clownfish','Poison Dart frog','Lion','Goat','Bald Eagle']
 	types = ['Fish','Fish','Amphibian','Mammal','Mammal','Bird']

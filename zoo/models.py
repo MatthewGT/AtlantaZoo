@@ -9,31 +9,40 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine, ForeignKey, Column, String, Integer,ForeignKeyConstraint
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+# Use the werkzeug to generate password hash
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin, AnonymousUserMixin
+
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'hard to guess string'
 app.config['SQLALCHEMY_DATABASE_URI'] =\
     'mysql+pymysql://root:@localhost:3306/test?charset=utf8mb4'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-
 bootstrap = Bootstrap(app)
 moment = Moment(app)
+# delete?
 db = SQLAlchemy(app)
 
-class User(db.Model):
+# UserMixin is a class has default implementations of
+# is_authenticated(), is_active(), is_anonymous(), get_id() methods
+
+class User(UserMixin, db.Model):
     """docstring for ClassName"""
     __tablename__ = 'user'
-    Username = db.Column(db.String(64), primary_key=True,nullable=False)
-    Password = db.Column(db.String(64), nullable=False)
-    Email = db.Column(db.String(64), nullable=False)
+    def get_id(self):
+        try:
+            return self.Username
+        except AttributeError:
+            raise NotImplementedError('No `Username` attribute - override `get_id`')
+    Username = db.Column(db.String(64), primary_key=True, nullable=False)
+    Email = db.Column(db.String(64), unique=True, nullable=False)
     UserType = db.Column(db.String(64), nullable=False)
+    Password_hash = db.Column(db.String(128))
     admin = db.relationship('Admin', backref='user_admin', lazy='dynamic')
     visitor = db.relationship('Visitor', backref='user_visitor', lazy='dynamic')
     staff = db.relationship('Staff', backref='user_staff', lazy='dynamic')
-    password_hash = db.Column(db.String(128))
 
     @property
     def password(self):
@@ -41,16 +50,17 @@ class User(db.Model):
 
     @password.setter
     def password(self, password):
-        self.password_hash = generate_password_hash(password)
+        self.Password_hash = generate_password_hash(password)
 
     def verify_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        return check_password_hash(self.Password_hash, password)
 
 
 class Admin(db.Model):
     """docstring for ClassName"""
     __tablename__ = 'admin'
     Username = db.Column(db.String(64), db.ForeignKey('user.Username'),primary_key=True,nullable=False)
+
 
 class Visitor(db.Model):
     """docstring for ClassName"""
@@ -66,7 +76,6 @@ class Staff(db.Model):
     Username = db.Column(db.String(64),db.ForeignKey('user.Username'), primary_key=True,nullable=False)
     show = db.relationship('Show', backref='staff_show', lazy='dynamic')
     animalcare = db.relationship('AnimalCare', backref='staff_animalcare',lazy='dynamic')
-
 
 
 class Animal(db.Model):
@@ -124,6 +133,7 @@ class VisitShow(db.Model):
     visitshow_datetime = db.relationship('Show', backref='visitshow_datetime', foreign_keys=[Datetime], uselist=False)
     __table_args__  = (ForeignKeyConstraint([ShowName, Datetime],[Show.Name, Show.Datetime]),{})
 
+
 class VisitExhibit(db.Model):
     """docstring for ClassName"""
     __tablename__ = 'visitexhibit'
@@ -132,63 +142,7 @@ class VisitExhibit(db.Model):
     Datetime = db.Column(db.String(64),primary_key=True,nullable=False, unique=True)
 
 
+# @login_manager.user_loader
+# def load_user(user_id):
+#     return User.query.get(int(user_id))
 
-
-
-
-# class Role(db.Model):
-#     __tablename__ = 'roles'
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(64), unique=True)
-#     users = db.relationship('User', backref='role', lazy='dynamic')
-
-#     def __repr__(self):
-#         return '<Role %r>' % self.name
-
-
-# class User(db.Model):
-#     __tablename__ = 'users'
-#     id = db.Column(db.Integer, primary_key=True)
-#     username = db.Column(db.String(64), unique=True, index=True)
-#     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
-
-#     def __repr__(self):
-#         return '<User %r>' % self.username
-
-
-class NameForm(FlaskForm):
-    name = StringField('What is your name?', validators=[DataRequired()])
-    submit = SubmitField('Submit')
-
-
-@app.shell_context_processor
-def make_shell_context():
-    return dict(db=db, User=User, Admin=Admin, Staff=Staff,Visitor=Visitor)
-
-
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
-
-
-@app.errorhandler(500)
-def internal_server_error(e):
-    return render_template('500.html'), 500
-
-
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    form = NameForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.name.data).first()
-        if user is None:
-            user = User(username=form.name.data)
-            db.session.add(user)
-            db.session.commit()
-            session['known'] = False
-        else:
-            session['known'] = True
-        session['name'] = form.name.data
-        return redirect(url_for('index'))
-    return render_template('index.html', form=form, name=session.get('name'),
-                           known=session.get('known', False))

@@ -1,31 +1,50 @@
-<doctype html>
+{% extends "base.html" %}
+
+{%block content %}
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-    <title>Flask Music Database</title>
+    <title>Atlanta Zoo</title>
 </head>
 
-<h2>Hello, User</h2>
+{% if current_user.is_authenticated %}
+    {{ current_user.username }}
+{% else %}
+    Stranger
+{% endif %}!
 
 <!-- 使用submit type button来通过点击button发起请求 -->
+<div>
 <form method="get" action="/exhibits/result">
   <button type="submit" class="btn btn-primary" >Search Exhibits</button>
 </form>
+</div>
 
+<div>
 <form method="get" action="/shows/result">
   <button type="submit" class="btn btn-primary" >Search Shows</button>
 </form>
+</div>
 
+<div>
 <form method="get" action="/animals/result">
   <button type="submit" class="btn btn-primary" >Search for Animals</button>
 </form>
+</div>
 
+<div>
 <form method="get" action="/exhibits/history">
   <button type="submit" class="btn btn-primary" >View Exhibit</button>
 </form>
+</div>
 
+<div>
 <form method="get" action="/shows/history">
   <button type="submit" class="btn btn-primary" >View Show History</button>
 </form>
+</div>
+{% endblock %}
+
+
 
 
