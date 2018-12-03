@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{%block content %}
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <title>Atlanta Zoo</title>
+</head>
+
+<div class="page-header">
+    <h1> Staff - Show History </h1>
+    <h1>Hello, {% if current_user.is_authenticated %}
+        {{ current_user.username }}
+        {% else %}
+            Stranger
+        {% endif %}!
+    </h1>
+</div>
+
+{{ wtf.quick_form(form) }}
+{% endblock %}

@@ -1,9 +1,29 @@
 {% extends "base.html" %}
 
 {%block content %}
+
 <div class="container">
     <div class="page-header">
         <h1>Search Animals!</h1>
     </div>
+    {% from "_formhelpers.html" import render_field %}
+    <form method=post>
+      <dl>
+        {{ render_field(form.animal_name) }}
+        <p>
+        {{ render_field(form.exhibit_name) }}
+        <p>
+        {{ render_field(form.animal_type) }}
+        <p>
+        {{ render_field(form.species) }}
+        <p>
+        {{ render_field(form.min_age) }}
+        <p>
+        {{ render_field(form.max_age) }}
+        <p>
+      </dl>
+      <p><input type=submit value=Search>
+    </form>
+
 </div>
 {% endblock %}

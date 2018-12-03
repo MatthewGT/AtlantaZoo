@@ -1,32 +1,73 @@
 {% extends "bootstrap/base.html" %}
 
+{% block head %}
+<head>
+    <link rel="stylesheet" type="text/css" href="mystyle.css">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+</head>
+{% endblock %}
+
 {% block navbar %}
 
-<div class="navbar navbar-inverse" role="navigation">
+<!-- <div class="navbar navbar-inverse" role="navigation">
     <div class="container">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-
-        </div>
-        <div class="navbar-collapse collapse">
-        </div>
+        <ul class ="nav navbar-nav navbar">
+             <li><a href="/">Home</a></li>
+        </ul>
         <ul class="nav navbar-nav navbar-right">
-            {% if current_user.is_authenticated %}
-            <li><a href="{{ url_for('login') }}">Sign Out</a></li>
+            {% if session['isLogin'] %}
+            <li><a href="{{ url_for('logout') }}">Sign Out</a></li>
             {% else %}
             <li><a href="{{ url_for('login') }}">Sign In</a></li>
             {% endif %}
         </ul>
+        </div>
     </div>
+</div> -->
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">Atlanta Zoo</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/">Home</a>
+      </li>
+      {% if session['isLogin'] %}
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('logout') }}">Log Out</a>
+      </li>
+      {% else %}
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('login') }}">Log In</a>
+      </li>
+      {% endif %}
+    </ul>
+   
+  </div>
+</nav>
+
+<div class="container-fluid" style="min-height:100% width:80%">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-warning alert-missible fade show" role="alert">
+                    {{message}}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 </div>
 
-<head>
-    <link rel="stylesheet" type="text/css" href="mystyle.css">
-</head>
 {% endblock %}
 

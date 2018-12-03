@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{%block content %}
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <title>Atlanta Zoo</title>
+</head>
+
+<style > 
+.button {
+  position: relative;
+    top: 200px;
+    left: 50px;
+    margin-right: 50px;
+    margin-bottom: 40px;
+}
+</style>
+
+<h1 style="text-align:center">
+    <br>
+  </br>
+  {% if session.get('isLogin') %}
+  Welcome {{ session.get('username')}}
+{% else %}
+  Stranger
+{% endif %}!
+</h1>
+
+
+<table width="800" border="0" align="center" cellpadding="0" cellspacing="0">
+<tr>
+
+<th scope="col">
+  <form method="get" action="/visitors/all">
+  <button type="submit" class="btn btn-primary button" >View Visitors</button>
+</form>
+</th>
+
+
+<th scope = "col">
+  <form method="get" action="/staffs/all">
+  <button type="submit" class="btn btn-primary button" >View Staff</button>
+</form>
+</th>
+
+
+<th scope = "col">
+  <form method="get" action="/shows/all">
+  <button type="submit" class="btn btn-primary button" >View Shows</button>
+</form>
+</th>
+
+</tr>
+</table>
+
+
+<table width="800" border="0" align="center" cellpadding="0" cellspacing="0">
+<tr>
+
+<th scope="col">
+  <form method="get" action="/animals/all">
+  <button type="submit" class="btn btn-primary button" >View Animals</button>
+</form>
+</th>
+
+
+<th scope = "col">
+  <form method="get" action="/shows/add">
+  <button type="submit" class="btn btn-primary button" >Add Show</button>
+</form>
+</th>
+
+
+<th scope = "col">
+  <form method="get" action="/animals/add">
+  <button type="submit" class="btn btn-primary button" >Add Animal</button>
+</form>
+</th>
+
+</tr>
+</table>
+
+
+
+{% endblock %}
+
+
+
+

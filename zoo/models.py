@@ -12,17 +12,17 @@ from sqlalchemy.ext.declarative import declarative_base
 # Use the werkzeug to generate password hash
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, AnonymousUserMixin
+from sqlalchemy.orm import backref
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'hard to guess string'
 app.config['SQLALCHEMY_DATABASE_URI'] =\
-    'mysql+pymysql://root:@localhost:3306/test?charset=utf8mb4'
+    'mysql+pymysql://root:0107@localhost:3306/test?charset=utf8mb4'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 bootstrap = Bootstrap(app)
 moment = Moment(app)
-# delete?
 db = SQLAlchemy(app)
 
 # UserMixin is a class has default implementations of
@@ -40,9 +40,9 @@ class User(UserMixin, db.Model):
     Email = db.Column(db.String(64), unique=True, nullable=False)
     UserType = db.Column(db.String(64), nullable=False)
     Password_hash = db.Column(db.String(128))
-    admin = db.relationship('Admin', backref='user_admin', lazy='dynamic')
-    visitor = db.relationship('Visitor', backref='user_visitor', lazy='dynamic')
-    staff = db.relationship('Staff', backref='user_staff', lazy='dynamic')
+    admin = db.relationship('Admin', backref='user_admin',passive_deletes=True, lazy='dynamic')
+    visitor = db.relationship('Visitor', backref='user_visitor', passive_deletes=True, lazy='dynamic')
+    staff = db.relationship('Staff', backref='user_staff', passive_deletes=True, lazy='dynamic')
 
     @property
     def password(self):
@@ -65,7 +65,7 @@ class Admin(db.Model):
 class Visitor(db.Model):
     """docstring for ClassName"""
     __tablename__ = 'visitor'
-    Username = db.Column(db.String(64),db.ForeignKey('user.Username'), primary_key=True,nullable=False)
+    Username = db.Column(db.String(64),db.ForeignKey('user.Username',ondelete='CASCADE'), primary_key=True,nullable=False)
     visitshow = db.relationship('VisitShow', backref='visitor_visitshow', lazy='dynamic')
     visitexhibit = db.relationship('VisitExhibit', backref='visitor_visitexhibit', lazy='dynamic')
 
@@ -73,9 +73,9 @@ class Visitor(db.Model):
 class Staff(db.Model):
     """docstring for ClassName"""
     __tablename__ = 'staff'
-    Username = db.Column(db.String(64),db.ForeignKey('user.Username'), primary_key=True,nullable=False)
-    show = db.relationship('Show', backref='staff_show', lazy='dynamic')
-    animalcare = db.relationship('AnimalCare', backref='staff_animalcare',lazy='dynamic')
+    Username = db.Column(db.String(64),db.ForeignKey('user.Username',ondelete='CASCADE'), primary_key=True,nullable=False)
+    show = db.relationship('Show', backref='staff_show', passive_deletes=True,lazy='dynamic')
+    animalcare = db.relationship('AnimalCare', backref='staff_animalcare', passive_deletes=True,lazy='dynamic')
 
 
 class Animal(db.Model):
@@ -85,7 +85,7 @@ class Animal(db.Model):
     Species = db.Column(db.String(64),primary_key=True,nullable=False)
     Type = db.Column(db.String(64),nullable=False)
     Age = db.Column(db.Integer,nullable=False)
-    Exhibit = db.Column(db.String(64),db.ForeignKey('exhibit.Name'),nullable=False)
+    Exhibit = db.Column(db.String(64),db.ForeignKey('exhibit.Name',ondelete='CASCADE'),nullable=False)
     # animalcare_animal = db.relationship('AnimalCare', backref='animal_animalcare',foreign_keys=["animalcare.Animal"], lazy='dynamic')
     # animalcare_species = db.relationship('AnimalCare', backref='animal_animalcare',foreign_keys=["animalcare.Species"], lazy='dynamic')
 
@@ -95,8 +95,8 @@ class Show(db.Model):
     __tablename__ = 'show'
     Name = db.Column(db.String(64),primary_key=True,nullable=False)
     Datetime = db.Column(db.String(64),primary_key=True,nullable=False)
-    Host = db.Column(db.String(64),db.ForeignKey('staff.Username'),nullable=False)
-    Exhibit = db.Column(db.String(64),db.ForeignKey('exhibit.Name'),nullable=False)
+    Host = db.Column(db.String(64),db.ForeignKey('staff.Username',ondelete='CASCADE'),nullable=False)
+    Exhibit = db.Column(db.String(64),db.ForeignKey('exhibit.Name',ondelete='CASCADE'),nullable=False)
 
 
 class Exhibit(db.Model):
@@ -105,9 +105,9 @@ class Exhibit(db.Model):
     Name = db.Column(db.String(64),primary_key=True,nullable=False)
     WaterFeature = db.Column(db.String(64),nullable=False)
     Size = db.Column(db.Integer,nullable=False)
-    animal = db.relationship('Animal', backref='exhibit_animal', lazy='dynamic')
-    show = db.relationship('Show', backref='exhibit_show', lazy='dynamic')
-    visitexhibit = db.relationship('VisitExhibit', backref='exhibit_visitexhibit', lazy='dynamic')
+    animal = db.relationship('Animal', backref='exhibit_animal',passive_deletes=True, lazy='dynamic')
+    show = db.relationship('Show', backref='exhibit_show',passive_deletes=True, lazy='dynamic')
+    visitexhibit = db.relationship('VisitExhibit', backref='exhibit_visitexhibit', passive_deletes=True,lazy='dynamic')
 
 
 class AnimalCare(db.Model):
@@ -115,31 +115,31 @@ class AnimalCare(db.Model):
     __tablename__ = 'animalcare'
     AnimalName = db.Column(db.String(64),nullable=False)
     SpeciesName = db.Column(db.String(64),nullable=False)
-    StaffMember = db.Column(db.String(64), db.ForeignKey('staff.Username'),primary_key=True,nullable=False)
+    StaffMember = db.Column(db.String(64), db.ForeignKey('staff.Username',ondelete='CASCADE'),primary_key=True,nullable=False)
     Datetime = db.Column(db.String(64),primary_key=True,nullable=False)
     Text = db.Column(db.Text,nullable=False)
     animalcare_animal = db.relationship('Animal', backref='animalcare_animal',foreign_keys=[AnimalName], uselist=False)
     animalcare_species = db.relationship('Animal', backref='animalcare_species',foreign_keys=[SpeciesName], uselist=False)
-    __table_args__  = (ForeignKeyConstraint([AnimalName, SpeciesName],[Animal.Name, Animal.Species]),{})
+    __table_args__  = (ForeignKeyConstraint([AnimalName, SpeciesName],[Animal.Name, Animal.Species],ondelete='CASCADE'),{})
 
 
 class VisitShow(db.Model):
     """docstring for ClassName"""
     __tablename__ = 'visitshow'
-    ShowName = db.Column(db.String(64),nullable=False)
-    Datetime = db.Column(db.String(64),nullable=False)
-    Visitor = db.Column(db.String(64),db.ForeignKey('visitor.Username'),primary_key=True,nullable=False)
+    ShowName = db.Column(db.String(64),primary_key=True,nullable=False)
+    Datetime = db.Column(db.String(64),primary_key=True,nullable=False)
+    Visitor = db.Column(db.String(64),db.ForeignKey('visitor.Username',ondelete='CASCADE'),primary_key=True,nullable=False)
     visitshow_showname = db.relationship('Show', backref='visitshow_showname', foreign_keys=[ShowName], uselist=False)
-    visitshow_datetime = db.relationship('Show', backref='visitshow_datetime', foreign_keys=[Datetime], uselist=False)
-    __table_args__  = (ForeignKeyConstraint([ShowName, Datetime],[Show.Name, Show.Datetime]),{})
+    visitshow_datetime = db.relationship('Show', backref='visitshow_datetime',foreign_keys=[Datetime], uselist=False)
+    __table_args__  = (ForeignKeyConstraint([ShowName, Datetime],[Show.Name, Show.Datetime],ondelete='CASCADE'),{})
 
 
 class VisitExhibit(db.Model):
     """docstring for ClassName"""
     __tablename__ = 'visitexhibit'
-    Exhibit = db.Column(db.String(64),db.ForeignKey('exhibit.Name'),primary_key=True,nullable=False, unique=True)
-    Visitor = db.Column(db.String(64),db.ForeignKey('visitor.Username'),primary_key=True,nullable=False, unique=True)
-    Datetime = db.Column(db.String(64),primary_key=True,nullable=False, unique=True)
+    Exhibit = db.Column(db.String(64),db.ForeignKey('exhibit.Name',ondelete='CASCADE'),primary_key=True,nullable=False)
+    Visitor = db.Column(db.String(64),db.ForeignKey('visitor.Username',ondelete='CASCADE'),primary_key=True,nullable=False)
+    Datetime = db.Column(db.String(64),primary_key=True,nullable=False)
 
 
 # @login_manager.user_loader

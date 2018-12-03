@@ -1,9 +1,51 @@
 {% extends "base.html" %}
 
-{% block title %}Flasky{% endblock %}
 
-{% block page_content %}
-<div class="page-header">
-    <h1>Hello, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}!</h1>
+{% block content%}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+
+.hero-image {
+  background-image: url("https://upload.wikimedia.org/wikipedia/commons/0/0f/Grosser_Panda.JPG");
+  background-color: #cccccc;
+  height: 800px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  max-width: 100%;
+    max-height: 100%;
+}
+.div-b{ 
+	position: fixed;
+    top: 250px;
+    left: 50px;
+    height:100px;
+    width: 300px;
+    margin-right: 50px;
+    margin-bottom: 40px;
+	background:#000;
+	color:white; 
+filter:alpha(Opacity=60);
+-moz-opacity:0.6;
+opacity: 0.6;
+max-width: 100%;
+    max-height: 100%;
+} 
+
+</style>
+<div class="hero-image">
+	<div class="div-b">
+<h1 style="text-align:center">
+	
+
+<div>WELCOME TO ALTANTA ZOO!</div>
+
+</h1>
 </div>
+</div> 
+
+
+
+
 {% endblock %}

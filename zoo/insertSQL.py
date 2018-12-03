@@ -39,7 +39,7 @@ if __name__ == '__main__':
 
 	###insert show data
 	shownames = ['Jungle Cruise','Feed the Fish','Fun Facts','Climbing','Flight of the Birds','Jungle Cruise','Feed the Fish','Fun Facts','Climbing','Flight of the Birds','Bald Eagle Show']
-	Datetimes = ['10/6/18 9:00AM','10/8/18 12:00PM','10/9/18 3:00PM','10/10/18 4:00PM','10/11/18 3:00PM','10/12/18 2:00PM','10/12/18 2:00PM','10/13/18 1:00PM','10/13/18 5:00PM','10/14/18 2:00PM','10/15/18 2:00PM']
+	Datetimes = ['10-6-18 9:00AM','10-8-18 12:00PM','10-9-18 3:00PM','10-10-18 4:00PM','10-11-18 3:00PM','10-12-18 2:00PM','10-12-18 2:00PM','10-13-18 1:00PM','10-13-18 5:00PM','10-14-18 2:00PM','10-15-18 2:00PM']
 	hosts = ['martha_johnson','martha_johnson','martha_johnson','benjamin_rao','ethan_roswell','martha_johnson','ethan_roswell','benjamin_rao','benjamin_rao','ethan_roswell','ethan_roswell']
 	exhibitnames = ['Jungle','Pacific','Sahara','Mountainous','Birds','Jungle','Pacific','Sahara','Mountainous','Birds','Birds']
 	for i in range(len(shownames)):

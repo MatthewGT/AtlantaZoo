@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
 
 
 {%block content %}
@@ -7,11 +6,6 @@
     <div class="page-header">
         <h1>Search Exhibits!</h1>
     </div>
-
-  <!--   <div class="col-md-4" method= "post">
-        {{ wtf.quick_form(form) }}
-        <p><input type=submit value=Search>
-    </div> -->
 
     {% from "_formhelpers.html" import render_field %}
     <form method=post>
